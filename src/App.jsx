@@ -20,6 +20,19 @@ const useCurrentTime = () => {
   return currentTime;
 };
 
+const usePersistedState = (key, defaultValue) => {
+  const [state, setState] = useState(() => {
+    const persistedValue = localStorage.getItem(key);
+    return persistedValue !== null ? JSON.parse(persistedValue) : defaultValue;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(key, JSON.stringify(state));
+  }, [key, state]);
+
+  return [state, setState];
+};
+
 const useTimeSinceLastFeed = (lastFeedTime) => {
   const currentTime = useCurrentTime();
   const [timeSinceLastFeed, setTimeSinceLastFeed] = useState(0);
@@ -65,19 +78,34 @@ const GapTimerButton = ({ active, startTime, totalTime }) => {
 };
 
 const App = () => {
-  const [leftActive, setLeftActive] = useState(false);
-  const [leftStartTime, setLeftStartTime] = useState(0);
-  const [leftTotalTime, setLeftTotalTime] = useState(0);
+  const [leftActive, setLeftActive] = usePersistedState("leftActive", false);
+  const [leftStartTime, setLeftStartTime] = usePersistedState(
+    "leftStartTime",
+    0,
+  );
+  const [leftTotalTime, setLeftTotalTime] = usePersistedState(
+    "leftTotalTime",
+    0,
+  );
 
-  const [rightActive, setRightActive] = useState(false);
-  const [rightStartTime, setRightStartTime] = useState(0);
-  const [rightTotalTime, setRightTotalTime] = useState(0);
+  const [rightActive, setRightActive] = usePersistedState("rightActive", false);
+  const [rightStartTime, setRightStartTime] = usePersistedState(
+    "rightStartTime",
+    0,
+  );
+  const [rightTotalTime, setRightTotalTime] = usePersistedState(
+    "rightTotalTime",
+    0,
+  );
 
-  const [gapActive, setGapActive] = useState(false);
-  const [gapStartTime, setGapStartTime] = useState(0);
-  const [gapTotalTime, setGapTotalTime] = useState(0);
+  const [gapActive, setGapActive] = usePersistedState("gapActive", false);
+  const [gapStartTime, setGapStartTime] = usePersistedState("gapStartTime", 0);
+  const [gapTotalTime, setGapTotalTime] = usePersistedState("gapTotalTime", 0);
 
-  const [lastFeedTime, setLastFeedTime] = useState(null);
+  const [lastFeedTime, setLastFeedTime] = usePersistedState(
+    "lastFeedTime",
+    null,
+  );
   const timeSinceLastFeed = useTimeSinceLastFeed(lastFeedTime);
 
   const handleLeftClick = () => {
