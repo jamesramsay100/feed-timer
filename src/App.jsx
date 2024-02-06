@@ -9,6 +9,18 @@ const useFormattedTime = (seconds) => {
   return `${paddedMinutes}:${paddedSeconds}`;
 };
 
+const useFormattedTimeWithHours = (seconds) => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secondsLeft = seconds % 60;
+
+  const paddedHours = hours.toString().padStart(2, "0");
+  const paddedMinutes = minutes.toString().padStart(2, "0");
+  const paddedSeconds = secondsLeft.toString().padStart(2, "0");
+
+  return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
+};
+
 const useCurrentTime = () => {
   const [currentTime, setCurrentTime] = useState(Date.now());
   useEffect(() => {
@@ -68,7 +80,7 @@ const TimerButton = ({ side, active, startTime, totalTime, onClick }) => {
 const GapTimerButton = ({ active, startTime, totalTime }) => {
   const currentTime = useCurrentTime();
   const elapsed = active ? Math.floor((currentTime - startTime) / 1000) : 0;
-  const formattedTime = useFormattedTime(totalTime + elapsed);
+  const formattedTime = useFormattedTimeWithHours(totalTime + elapsed);
   return (
     <button className={`timer-button ${active ? "active" : ""}`}>
       <div className="side">Gap :</div>
