@@ -1,27 +1,47 @@
 body {
-  background-color: #f0f0f0;
+  background-color: #00ffff; /* Garish neobrutalism blue */
   color: #333;
   padding: 40px;
   font-family: Arial;
   text-align: center;
 }
 
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
 .timer-buttons {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   gap: 20px;
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 20px;
 }
 
 .timer-button {
-  width: 200px;
+  flex-grow: 1;
+  max-width: 200px;
+  min-width: 150px;
   height: 200px;
-  border: none;
-  border-radius: 50%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 8px solid #333;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   transition: transform 0.3s;
-  background-color: #f44336; /* Add this line */
+  background-color: #ff5733;
+}
+
+.gap-timer-button {
+  flex-grow: 2;
+  max-width: 400px;
+  min-width: 300px;
+  height: 200px;
 }
 
 .timer-button:hover {
@@ -29,21 +49,25 @@ body {
 }
 
 .timer-button.active {
-  background-color: #4caf50;
+  background-color: #33ff57;
 }
 
 .timer-button .side {
-  font-size: 32px;
+  font-size: 48px;
   font-weight: bold;
+  color: #333;
 }
 
 .timer-button .time {
-  font-size: 48px;
+  font-size: 64px;
+  font-weight: bold;
+  color: #333;
 }
 
 .last-feed {
-  margin-top: 40px;
   font-size: 24px;
+  font-weight: bold;
+  color: #333;
 }
 
 .last-feed span {
