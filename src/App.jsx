@@ -1,20 +1,14 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 
-// A custom hook to format time in mm:ss
 const useFormattedTime = (seconds) => {
-  const [formattedTime, setFormattedTime] = useState("00:00");
-  useEffect(() => {
-    const minutes = Math.floor(seconds / 60);
-    const secondsLeft = seconds % 60;
-    const paddedMinutes = minutes.toString().padStart(2, "0");
-    const paddedSeconds = secondsLeft.toString().padStart(2, "0");
-    setFormattedTime(`${paddedMinutes}:${paddedSeconds}`);
-  }, [seconds]);
-  return formattedTime;
+  const minutes = Math.floor(seconds / 60);
+  const secondsLeft = seconds % 60;
+  const paddedMinutes = minutes.toString().padStart(2, "0");
+  const paddedSeconds = secondsLeft.toString().padStart(2, "0");
+  return `${paddedMinutes}:${paddedSeconds}`;
 };
 
-// A custom hook to get the current time in milliseconds
 const useCurrentTime = () => {
   const [currentTime, setCurrentTime] = useState(Date.now());
   useEffect(() => {
@@ -26,7 +20,23 @@ const useCurrentTime = () => {
   return currentTime;
 };
 
-// A component to render a button with a timer
+const useTimeSinceLastFeed = (lastFeedTime) => {
+  const currentTime = useCurrentTime();
+  const [timeSinceLastFeed, setTimeSinceLastFeed] = useState(0);
+
+  useEffect(() => {
+    if (lastFeedTime) {
+      const interval = setInterval(() => {
+        const elapsedTime = Math.floor((currentTime - lastFeedTime) / 1000);
+        setTimeSinceLastFeed(elapsedTime);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [currentTime, lastFeedTime]);
+
+  return timeSinceLastFeed;
+};
+
 const TimerButton = ({ side, active, startTime, totalTime, onClick }) => {
   const currentTime = useCurrentTime();
   const elapsed = active ? Math.floor((currentTime - startTime) / 1000) : 0;
@@ -42,9 +52,19 @@ const TimerButton = ({ side, active, startTime, totalTime, onClick }) => {
   );
 };
 
-// The main component of the app
+const GapTimerButton = ({ active, startTime, totalTime }) => {
+  const currentTime = useCurrentTime();
+  const elapsed = active ? Math.floor((currentTime - startTime) / 1000) : 0;
+  const formattedTime = useFormattedTime(totalTime + elapsed);
+  return (
+    <button className={`timer-button ${active ? "active" : ""}`}>
+      <div className="side">Gap :</div>
+      <div className="time">{formattedTime}</div>
+    </button>
+  );
+};
+
 const App = () => {
-  // The state variables for the left and right buttons
   const [leftActive, setLeftActive] = useState(false);
   const [leftStartTime, setLeftStartTime] = useState(0);
   const [leftTotalTime, setLeftTotalTime] = useState(0);
@@ -53,61 +73,61 @@ const App = () => {
   const [rightStartTime, setRightStartTime] = useState(0);
   const [rightTotalTime, setRightTotalTime] = useState(0);
 
-  // The state variable for the last feed time
-  const [lastFeedTime, setLastFeedTime] = useState(null);
+  const [gapActive, setGapActive] = useState(false);
+  const [gapStartTime, setGapStartTime] = useState(0);
+  const [gapTotalTime, setGapTotalTime] = useState(0);
 
-  // The handler for the left button click
+  const [lastFeedTime, setLastFeedTime] = useState(null);
+  const timeSinceLastFeed = useTimeSinceLastFeed(lastFeedTime);
+
   const handleLeftClick = () => {
     const currentTime = Date.now();
     if (leftActive) {
-      // Stop the left timer and update the total time
+      // stopping LH
       setLeftActive(false);
       setLeftTotalTime(
-        (prev) => prev + Math.floor((currentTime - leftStartTime) / 1000)
+        (prev) => prev + Math.floor((currentTime - leftStartTime) / 1000),
       );
+      setGapActive(true);
+      setGapStartTime(currentTime);
     } else {
-      // Start the left timer and stop the right timer if active
+      setGapActive(false);
+      setGapTotalTime(0);
       setLeftActive(true);
       setLeftStartTime(currentTime);
       if (rightActive) {
         setRightActive(false);
         setRightTotalTime(
-          (prev) => prev + Math.floor((currentTime - rightStartTime) / 1000)
+          (prev) => prev + Math.floor((currentTime - rightStartTime) / 1000),
         );
       }
-      // Update the last feed time
       setLastFeedTime(currentTime);
     }
   };
 
-  // The handler for the right button click
   const handleRightClick = () => {
     const currentTime = Date.now();
     if (rightActive) {
-      // Stop the right timer and update the total time
       setRightActive(false);
       setRightTotalTime(
-        (prev) => prev + Math.floor((currentTime - rightStartTime) / 1000)
+        (prev) => prev + Math.floor((currentTime - rightStartTime) / 1000),
       );
+      setGapActive(true);
+      setGapStartTime(currentTime);
     } else {
-      // Start the right timer and stop the left timer if active
+      setGapActive(false);
+      setGapTotalTime(0);
       setRightActive(true);
       setRightStartTime(currentTime);
       if (leftActive) {
         setLeftActive(false);
         setLeftTotalTime(
-          (prev) => prev + Math.floor((currentTime - leftStartTime) / 1000)
+          (prev) => prev + Math.floor((currentTime - leftStartTime) / 1000),
         );
       }
-      // Update the last feed time
       setLastFeedTime(currentTime);
     }
   };
-
-  // The formatted time since last feed
-  const timeSinceLastFeed = useFormattedTime(
-    lastFeedTime ? Math.floor((Date.now() - lastFeedTime) / 1000) : 0
-  );
 
   return (
     <div className="app">
@@ -127,10 +147,11 @@ const App = () => {
           onClick={handleRightClick}
         />
       </div>
-      <div className="last-feed">
-        <span>Time since last feed:</span>
-        <span>{timeSinceLastFeed}</span>
-      </div>
+      <GapTimerButton
+        active={gapActive}
+        startTime={gapStartTime}
+        totalTime={gapTotalTime}
+      />
     </div>
   );
 };
