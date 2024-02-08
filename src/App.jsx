@@ -187,11 +187,13 @@ const App = () => {
           onClick={handleRightClick}
         />
       </div>
-      <GapTimerButton
-        active={gapActive}
-        startTime={gapStartTime}
-        totalTime={gapTotalTime}
-      />
+      <div className="timer-buttons">
+        <GapTimerButton
+          active={gapActive}
+          startTime={gapStartTime}
+          totalTime={gapTotalTime}
+        />
+      </div>
     </div>
   );
 };

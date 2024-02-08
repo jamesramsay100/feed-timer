@@ -20,28 +20,21 @@ body {
   align-items: center;
   gap: 20px;
   width: 100%;
-  max-width: 800px;
+  max-width: 600px;
   margin-bottom: 20px;
 }
 
 .timer-button {
   flex-grow: 1;
-  max-width: 200px;
-  min-width: 150px;
-  height: 200px;
+  max-width: 800px;
+  min-width: 180px;
+  height: 180px;
   border: 8px solid #333;
   border-radius: 10px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   transition: transform 0.3s;
   background-color: #ff5733;
-}
-
-.gap-timer-button {
-  flex-grow: 2;
-  max-width: 400px;
-  min-width: 300px;
-  height: 200px;
 }
 
 .timer-button:hover {
@@ -53,24 +46,13 @@ body {
 }
 
 .timer-button .side {
-  font-size: 48px;
+  font-size: 36px;
   font-weight: bold;
   color: #333;
 }
 
 .timer-button .time {
-  font-size: 64px;
+  font-size: 48px;
   font-weight: bold;
   color: #333;
-}
-
-.last-feed {
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
-}
-
-.last-feed span {
-  display: inline-block;
-  padding: 10px;
 }
