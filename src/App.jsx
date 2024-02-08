@@ -133,8 +133,10 @@ const App = () => {
     } else {
       setGapActive(false);
       setGapTotalTime(0);
+      setLeftTotalTime(0);
+      setRightTotalTime(0);
       setLeftActive(true);
-      setLeftStartTime(currentTime);
+      setLeftStartTime(currentTime); // Reset startTime when starting the timer
       if (rightActive) {
         setRightActive(false);
         setRightTotalTime(
@@ -157,8 +159,10 @@ const App = () => {
     } else {
       setGapActive(false);
       setGapTotalTime(0);
+      setRightTotalTime(0);
+      setLeftTotalTime(0);
       setRightActive(true);
-      setRightStartTime(currentTime);
+      setRightStartTime(currentTime); // Reset startTime when starting the timer
       if (leftActive) {
         setLeftActive(false);
         setLeftTotalTime(
