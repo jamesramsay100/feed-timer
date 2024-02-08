@@ -89,6 +89,32 @@ const GapTimerButton = ({ active, startTime, totalTime }) => {
   );
 };
 
+const FeedLog = ({ feedLog }) => (
+  <div className="feed-log">
+    <h2>Recent Feeds</h2>
+    <ul>
+      {feedLog.map((feed, index) => (
+        <li key={index}>
+          <strong>{formatStartTime(feed.startTime)}, </strong>
+          <strong>L:</strong> {feed.leftDuration} mins, <strong>R:</strong>{" "}
+          {feed.rightDuration} mins, <strong>Total:</strong>{" "}
+          {feed.totalDuration} mins
+        </li>
+      ))}
+    </ul>
+  </div>
+);
+
+const formatStartTime = (startTime) => {
+  const date = new Date(startTime);
+  const day = date.toLocaleDateString(undefined, { weekday: "short" });
+  const time = date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  return `${day} ${time}`;
+};
+
 const App = () => {
   const [leftActive, setLeftActive] = usePersistedState("leftActive", false);
   const [leftStartTime, setLeftStartTime] = usePersistedState(
@@ -118,6 +144,8 @@ const App = () => {
     "lastFeedTime",
     null,
   );
+  const [feedLog, setFeedLog] = usePersistedState("feedLog", []);
+
   const timeSinceLastFeed = useTimeSinceLastFeed(lastFeedTime);
 
   const handleLeftClick = () => {
@@ -125,11 +153,19 @@ const App = () => {
     if (leftActive) {
       // stopping LH
       setLeftActive(false);
-      setLeftTotalTime(
-        (prev) => prev + Math.floor((currentTime - leftStartTime) / 1000),
-      );
+      const leftDuration = Math.floor((currentTime - leftStartTime) / 1000);
+      setLeftTotalTime((prev) => prev + leftDuration);
       setGapActive(true);
       setGapStartTime(currentTime);
+      setFeedLog((prevLog) => [
+        ...prevLog,
+        {
+          startTime: leftStartTime,
+          leftDuration,
+          rightDuration: 0,
+          totalDuration: leftDuration,
+        },
+      ]);
     } else {
       setGapActive(false);
       setGapTotalTime(0);
@@ -139,9 +175,17 @@ const App = () => {
       setLeftStartTime(currentTime); // Reset startTime when starting the timer
       if (rightActive) {
         setRightActive(false);
-        setRightTotalTime(
-          (prev) => prev + Math.floor((currentTime - rightStartTime) / 1000),
-        );
+        const rightDuration = Math.floor((currentTime - rightStartTime) / 1000);
+        setRightTotalTime((prev) => prev + rightDuration);
+        setFeedLog((prevLog) => [
+          ...prevLog,
+          {
+            startTime: rightStartTime,
+            leftDuration: 0,
+            rightDuration,
+            totalDuration: rightDuration,
+          },
+        ]);
       }
       setLastFeedTime(currentTime);
     }
@@ -151,11 +195,19 @@ const App = () => {
     const currentTime = Date.now();
     if (rightActive) {
       setRightActive(false);
-      setRightTotalTime(
-        (prev) => prev + Math.floor((currentTime - rightStartTime) / 1000),
-      );
+      const rightDuration = Math.floor((currentTime - rightStartTime) / 1000);
+      setRightTotalTime((prev) => prev + rightDuration);
       setGapActive(true);
       setGapStartTime(currentTime);
+      setFeedLog((prevLog) => [
+        ...prevLog,
+        {
+          startTime: rightStartTime,
+          leftDuration: 0,
+          rightDuration,
+          totalDuration: rightDuration,
+        },
+      ]);
     } else {
       setGapActive(false);
       setGapTotalTime(0);
@@ -165,9 +217,17 @@ const App = () => {
       setRightStartTime(currentTime); // Reset startTime when starting the timer
       if (leftActive) {
         setLeftActive(false);
-        setLeftTotalTime(
-          (prev) => prev + Math.floor((currentTime - leftStartTime) / 1000),
-        );
+        const leftDuration = Math.floor((currentTime - leftStartTime) / 1000);
+        setLeftTotalTime((prev) => prev + leftDuration);
+        setFeedLog((prevLog) => [
+          ...prevLog,
+          {
+            startTime: leftStartTime,
+            leftDuration,
+            rightDuration: 0,
+            totalDuration: leftDuration,
+          },
+        ]);
       }
       setLastFeedTime(currentTime);
     }
@@ -198,6 +258,7 @@ const App = () => {
           totalTime={gapTotalTime}
         />
       </div>
+      <FeedLog feedLog={feedLog.slice(-10)} />
     </div>
   );
 };
