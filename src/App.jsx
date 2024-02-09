@@ -154,6 +154,7 @@ const App = () => {
       // stopping LH
       setLeftActive(false);
       const leftDuration = Math.floor((currentTime - leftStartTime) / 1000);
+      const rightDuration = Math.floor((leftStartTime - rightStartTime) / 1000);
       setLeftTotalTime((prev) => prev + leftDuration);
       setGapActive(true);
       setGapStartTime(currentTime);
@@ -162,11 +163,12 @@ const App = () => {
         {
           startTime: leftStartTime,
           leftDuration,
-          rightDuration: 0,
-          totalDuration: leftDuration,
+          rightDuration,
+          totalDuration: leftDuration + rightDuration,
         },
       ]);
     } else {
+      // starting LH
       setGapActive(false);
       setGapTotalTime(0);
       setLeftTotalTime(0);
@@ -174,18 +176,12 @@ const App = () => {
       setLeftActive(true);
       setLeftStartTime(currentTime); // Reset startTime when starting the timer
       if (rightActive) {
+        // stopping RH and starting LH
         setRightActive(false);
         const rightDuration = Math.floor((currentTime - rightStartTime) / 1000);
         setRightTotalTime((prev) => prev + rightDuration);
-        setFeedLog((prevLog) => [
-          ...prevLog,
-          {
-            startTime: rightStartTime,
-            leftDuration: 0,
-            rightDuration,
-            totalDuration: rightDuration,
-          },
-        ]);
+      } else {
+        setRightStartTime(currentTime);
       }
       setLastFeedTime(currentTime);
     }
@@ -194,8 +190,10 @@ const App = () => {
   const handleRightClick = () => {
     const currentTime = Date.now();
     if (rightActive) {
+      // stopping RH
       setRightActive(false);
       const rightDuration = Math.floor((currentTime - rightStartTime) / 1000);
+      const leftDuration = Math.floor((rightStartTime - leftStartTime) / 1000);
       setRightTotalTime((prev) => prev + rightDuration);
       setGapActive(true);
       setGapStartTime(currentTime);
@@ -203,12 +201,13 @@ const App = () => {
         ...prevLog,
         {
           startTime: rightStartTime,
-          leftDuration: 0,
+          leftDuration,
           rightDuration,
-          totalDuration: rightDuration,
+          totalDuration: rightDuration + leftDuration,
         },
       ]);
     } else {
+      // starting RH
       setGapActive(false);
       setGapTotalTime(0);
       setRightTotalTime(0);
@@ -216,18 +215,12 @@ const App = () => {
       setRightActive(true);
       setRightStartTime(currentTime); // Reset startTime when starting the timer
       if (leftActive) {
+        // stopping LH and starting RH
         setLeftActive(false);
         const leftDuration = Math.floor((currentTime - leftStartTime) / 1000);
         setLeftTotalTime((prev) => prev + leftDuration);
-        setFeedLog((prevLog) => [
-          ...prevLog,
-          {
-            startTime: leftStartTime,
-            leftDuration,
-            rightDuration: 0,
-            totalDuration: leftDuration,
-          },
-        ]);
+      } else {
+        setLeftStartTime(currentTime);
       }
       setLastFeedTime(currentTime);
     }
@@ -258,7 +251,7 @@ const App = () => {
           totalTime={gapTotalTime}
         />
       </div>
-      <FeedLog feedLog={feedLog.slice(-10)} />
+      <FeedLog feedLog={feedLog.slice(-3)} />
     </div>
   );
 };
