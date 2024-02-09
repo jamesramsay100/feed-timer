@@ -1,15 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 
-const useFormattedTime = (seconds) => {
-  const minutes = Math.floor(seconds / 60);
-  const secondsLeft = seconds % 60;
-  const paddedMinutes = minutes.toString().padStart(2, "0");
-  const paddedSeconds = secondsLeft.toString().padStart(2, "0");
-  return `${paddedMinutes}:${paddedSeconds}`;
-};
-
-const useFormattedTimeWithHours = (seconds) => {
+const formatTime = (seconds) => {
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   const secondsLeft = seconds % 60;
@@ -18,7 +10,9 @@ const useFormattedTimeWithHours = (seconds) => {
   const paddedMinutes = minutes.toString().padStart(2, "0");
   const paddedSeconds = secondsLeft.toString().padStart(2, "0");
 
-  return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
+  return hours > 0
+    ? `${paddedHours}:${paddedMinutes}:${paddedSeconds}`
+    : `${paddedMinutes}:${paddedSeconds}`;
 };
 
 const useCurrentTime = () => {
@@ -65,7 +59,7 @@ const useTimeSinceLastFeed = (lastFeedTime) => {
 const TimerButton = ({ side, active, startTime, totalTime, onClick }) => {
   const currentTime = useCurrentTime();
   const elapsed = active ? Math.floor((currentTime - startTime) / 1000) : 0;
-  const formattedTime = useFormattedTime(totalTime + elapsed);
+  const formattedTime = formatTime(totalTime + elapsed);
   return (
     <button
       className={`timer-button ${active ? "active" : ""}`}
@@ -80,7 +74,7 @@ const TimerButton = ({ side, active, startTime, totalTime, onClick }) => {
 const GapTimerButton = ({ active, startTime, totalTime }) => {
   const currentTime = useCurrentTime();
   const elapsed = active ? Math.floor((currentTime - startTime) / 1000) : 0;
-  const formattedTime = useFormattedTimeWithHours(totalTime + elapsed);
+  const formattedTime = formatTime(totalTime + elapsed);
   return (
     <button className={`timer-button ${active ? "active" : ""}`}>
       <div className="side">Gap :</div>
