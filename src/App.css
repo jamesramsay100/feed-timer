@@ -1,8 +1,16 @@
 body {
-  background-color: #00ffff; /* Garish neobrutalism blue */
-  color: #333;
-  padding: 40px;
-  font-family: Arial;
+  background: linear-gradient(
+    to bottom,
+    #f8f8f8 0%,
+    #f0f0f0 100%
+  ); /* Subtle gradient */
+  color: #222; /* Dark, easy-to-read text */
+  padding: 20px;
+  font-family:
+    "San Francisco",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif; /* Apple's system font */
   text-align: center;
 }
 
@@ -10,8 +18,9 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100vh;
+  justify-content: flex-start; /* Align items to the top */
+  height: auto; /* Allow content to dictate height */
+  min-height: 100vh; /* Ensure screen coverage */
 }
 
 .timer-buttons {
@@ -21,7 +30,7 @@ body {
   gap: 20px;
   width: 100%;
   max-width: 600px;
-  margin-bottom: 20px;
+  margin-bottom: 30px; /* More spacing around elements */
 }
 
 .timer-button {
@@ -29,30 +38,66 @@ body {
   max-width: 800px;
   min-width: 180px;
   height: 180px;
-  border: 8px solid #333;
-  border-radius: 10px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  border: none; /* Remove the previous border */
+  border-radius: 20px; /* Softer roundness */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   cursor: pointer;
-  transition: transform 0.3s;
-  background-color: #ff5733;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s; /* Smooth transitions */
+  background-color: #fff; /* Clean white background */
 }
 
 .timer-button:hover {
-  transform: scale(1.1);
+  transform: translateY(-2px); /* Slight lift upon hover */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* More defined hover shadow */
 }
 
 .timer-button.active {
-  background-color: #33ff57;
+  background-color: #e0f0ff; /* Light blue hue for active state */
 }
 
 .timer-button .side {
-  font-size: 36px;
-  font-weight: bold;
+  font-size: 30px;
+  font-weight: 600; /* Slightly bolder */
   color: #333;
 }
 
 .timer-button .time {
-  font-size: 48px;
-  font-weight: bold;
+  font-size: 54px;
+  font-weight: 700; /* Bolder for emphasis */
   color: #333;
+}
+
+.feed-log {
+  margin-top: 40px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.feed-log h2 {
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.feed-log ul {
+  padding: 0;
+  list-style-type: none;
+}
+
+.feed-log li {
+  background-color: #fff;
+  margin-bottom: 12px;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  color: #444; /* Less harsh text color */
+  white-space: normal; /* Allow text to wrap normally */
+}
+
+.feed-log li strong {
+  display: inline-block;
+  width: auto; /* Let labels adjust naturally */
+  color: #333; /* Labels similar to regular text */
+  margin-right: 8px;
 }
