@@ -22,4 +22,8 @@ const formatStartTime = (startTime) => {
   return `${day} ${time}`;
 };
 
-export { formatTime, formatStartTime };
+const roundUpToMinutes = (durationInSeconds) => {
+  return Math.ceil(durationInSeconds / 60);
+};
+
+export { formatTime, formatStartTime, roundUpToMinutes };

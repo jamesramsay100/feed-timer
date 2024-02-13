@@ -1,5 +1,6 @@
 import React from "react";
 import { formatStartTime } from "../utils/formatters";
+import { roundUpToMinutes } from "../utils/formatters"; // Import the new utility
 
 const FeedLog = ({ feedLog }) => (
   <div className="feed-log">
@@ -8,9 +9,9 @@ const FeedLog = ({ feedLog }) => (
       {feedLog.map((feed, index) => (
         <li key={index}>
           <strong>{formatStartTime(feed.startTime)}, </strong>
-          <strong>L:</strong> {feed.leftDuration} mins, <strong>R:</strong>{" "}
-          {feed.rightDuration} mins, <strong>Total:</strong>{" "}
-          {feed.totalDuration} mins
+          <strong>L:</strong> {roundUpToMinutes(feed.leftDuration)} mins,
+          <strong>R:</strong> {roundUpToMinutes(feed.rightDuration)} mins,
+          <strong>Total:</strong> {roundUpToMinutes(feed.totalDuration)} mins
         </li>
       ))}
     </ul>
