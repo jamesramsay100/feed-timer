@@ -9,7 +9,7 @@ const GapTimerButton = ({ active, startTime, totalTime }) => {
 
   return (
     <button className={`timer-button ${active ? "active" : ""}`}>
-      <div className="side">Gap :</div>
+      <div className="side">Gap</div>
       <div className="time">{formattedTime}</div>
     </button>
   );
