@@ -245,7 +245,7 @@ const App = () => {
           totalTime={gapTotalTime}
         />
       </div>
-      <FeedLog feedLog={feedLog.slice(-3)} />
+      <FeedLog feedLog={feedLog.slice(0).reverse().slice(0, 9)} />
     </div>
   );
 };
